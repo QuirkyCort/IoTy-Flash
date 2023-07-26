@@ -18,6 +18,21 @@ const files = [
 const chunkSize = 256;
 const chunkDelay = 10;
 
+let usbFilters = [
+  { // CH9102F (non-standard?)
+    usbVendorId: 0x1a86,
+    usbProductId: 0x55d4
+  },
+  { // CP2102
+    usbVendorId: 0x10c4,
+    usbProductId: 0xea60
+  },
+  { // CH340
+    usbVendorId: 0x1a86,
+    usbProductId: 0x7523
+  },
+];
+
 function bufferToString(buffer) {
   const bytes = new Uint8Array(buffer);
   return bytes.reduce((string, byte) => (string + String.fromCharCode(byte)), '');
@@ -105,13 +120,19 @@ var main = new function() {
     self.flashMicropythonBtn = document.getElementById('flashMicropython');
     self.flashIoTyBtn = document.getElementById('flashIoTy');
     self.deviceNameInput = document.getElementById('deviceName');
+    self.noWebSerial = document.getElementById('noWebSerial');
 
     self.connectBtn.addEventListener('click', self.connect);
     self.filteredConnectBtn.addEventListener('click', self.filteredConnect);
     self.flashMicropythonBtn.addEventListener('click', self.flashMicropython);
     self.flashIoTyBtn.addEventListener('click', self.flashIoTy);
 
-    this.downloadFirmware();
+    if ('serial' in navigator) {
+      this.downloadFirmware();
+    } else {
+      terminal.writeLine('Web Serial not supported on this browser!');
+      self.noWebSerial.classList.remove('hide');
+    }
   }
 
   this.downloadFirmware = async function() {
@@ -149,20 +170,8 @@ var main = new function() {
   }
 
   this.filteredConnect = async function() {
-    let filters = [
-      {
-        usbVendorId: 0x1a86,
-        usbProductId: 0x55d4
-      },
-      {
-        usbVendorId: 0x1a86,
-        usbProductId: 0x7523
-      },
-    ];
-
-    await self.connect(filters);
+    await self.connect(usbFilters);
   }
-
 
   this.flashMicropython = async function() {
     try {
