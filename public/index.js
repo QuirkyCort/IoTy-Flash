@@ -185,6 +185,8 @@ var main = new function() {
 
       await self.esploader.main_fn();
 
+      await awaitTimeout(1000);
+
       await self.esploader.erase_flash();
 
       let fileArray = [{
