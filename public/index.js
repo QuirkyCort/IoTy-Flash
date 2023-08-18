@@ -11,6 +11,7 @@ const files = [
   'ioty/monitor_mqtt.mpy',
   'ioty/mqtt.mpy',
   'ioty/pin.mpy',
+  'ioty/services.mpy',
   'ioty/html/index.html',
   'umqtt/robust.mpy',
   'umqtt/simple.mpy'
