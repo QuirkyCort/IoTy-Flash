@@ -233,7 +233,7 @@ var main = new function() {
     terminal.write('Terminating running program... ');
     self.clearBuf();
     self.sendCtrlC();
-    r = await self.waitForString('>>> ');
+    r = await self.waitForString('>>> ', 5000);
     if (r == null) {
       terminal.writeLine('Timeout waiting for Python prompt');
       await self.closePort();
@@ -301,6 +301,12 @@ var main = new function() {
 
   this.openPort = async function() {
     await self.port.open({ baudRate: 115200 });
+
+    self.port.setSignals({
+      dataTerminalReady: false,
+      requestToSend: false
+    });
+
     self.reader = self.port.readable.getReader();
     self.writer = self.port.writable.getWriter();
     self.readBuf = new Uint8Array();
