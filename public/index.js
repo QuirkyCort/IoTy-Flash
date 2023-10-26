@@ -126,6 +126,7 @@ var main = new function() {
     self.flashIoTyBtn = document.getElementById('flashIoTy');
     self.deviceNameInput = document.getElementById('deviceName');
     self.dtrRts = document.getElementById('dtrRts');
+    self.formatLittleFS = document.getElementById('formatLittleFS');
     self.noWebSerial = document.getElementById('noWebSerial');
 
     self.connectBtn.addEventListener('click', self.connect);
@@ -219,6 +220,8 @@ var main = new function() {
   this.flashIoTy = async function() {
     let deviceName = self.deviceNameInput.value;
     let dtrRts = self.dtrRts.value;
+    let formatLittleFS = self.formatLittleFS.checked;
+
     deviceName = deviceName.trim();
     if (deviceName == '') {
       terminal.writeLine('Device name cannot be empty');
@@ -258,12 +261,14 @@ var main = new function() {
     }
     terminal.writeLine('Done');
 
-    terminal.write('Formating filesystem... ');
-    if (await self.formatFilesystem() != 'success') {
-      await self.closePort();
-      return;
+    if (formatLittleFS) {
+      terminal.write('Formating filesystem... ');
+      if (await self.formatFilesystem() != 'success') {
+        await self.closePort();
+        return;
+      }
+      terminal.writeLine('Done');
     }
-    terminal.writeLine('Done');
 
     terminal.write('Creating directories... ');
     if (await self.createDirectories(directories) != 'success') {

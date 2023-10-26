@@ -96,11 +96,12 @@
             </p>
             Device name:
             <input id="deviceName" type="text" maxlength="8">
-            <button id="flashIoTy">Flash IoTy</button>
+            <button id="flashIoTy">Flash IoTy</button><br>
             <select id="dtrRts">
                 <option value="0">Default DTR and RTS</option>
                 <option value="1">DTR: False, RTS: False</option>
-            </select>
+            </select><br>
+            <input type="checkbox" id="formatLittleFS" checked> Format Littlefs
         </div>
 
         <script type="module" src="index.js"></script>
