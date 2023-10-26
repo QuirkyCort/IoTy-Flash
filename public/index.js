@@ -32,6 +32,10 @@ let usbFilters = [
     usbVendorId: 0x1a86,
     usbProductId: 0x7523
   },
+  { // RPI Pico
+    usbProductId: 5,
+    usbVendorId: 11914
+  }
 ];
 
 function bufferToString(buffer) {
@@ -121,6 +125,7 @@ var main = new function() {
     self.flashMicropythonBtn = document.getElementById('flashMicropython');
     self.flashIoTyBtn = document.getElementById('flashIoTy');
     self.deviceNameInput = document.getElementById('deviceName');
+    self.dtrRts = document.getElementById('dtrRts');
     self.noWebSerial = document.getElementById('noWebSerial');
 
     self.connectBtn.addEventListener('click', self.connect);
@@ -213,6 +218,7 @@ var main = new function() {
 
   this.flashIoTy = async function() {
     let deviceName = self.deviceNameInput.value;
+    let dtrRts = self.dtrRts.value;
     deviceName = deviceName.trim();
     if (deviceName == '') {
       terminal.writeLine('Device name cannot be empty');
@@ -224,7 +230,7 @@ var main = new function() {
     }
 
     try {
-      await self.openPort();
+      await self.openPort(dtrRts);
     } catch (error) {
       terminal.writeLine(error);
       return;
@@ -300,13 +306,16 @@ var main = new function() {
     terminal.writeLine('Flash IoTy completed!');
   }
 
-  this.openPort = async function() {
+  this.openPort = async function(dtrRts=0) {
     await self.port.open({ baudRate: 115200 });
 
-    self.port.setSignals({
-      dataTerminalReady: false,
-      requestToSend: false
-    });
+    console.log('dtrRts mode:', dtrRts)
+    if (dtrRts == 1) {
+      self.port.setSignals({
+        dataTerminalReady: false,
+        requestToSend: false
+      });
+    }
 
     self.reader = self.port.readable.getReader();
     self.writer = self.port.writable.getWriter();

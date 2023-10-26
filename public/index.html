@@ -91,9 +91,16 @@
             <p>
                 Device name cannot be empty and must be no more than 8 characters.
             </p>
+            <p>
+                The ESP32-Cam may need DTR and RTS to be set to False.
+            </p>
             Device name:
             <input id="deviceName" type="text" maxlength="8">
             <button id="flashIoTy">Flash IoTy</button>
+            <select id="dtrRts">
+                <option value="0">Default DTR and RTS</option>
+                <option value="1">DTR: False, RTS: False</option>
+            </select>
         </div>
 
         <script type="module" src="index.js"></script>
