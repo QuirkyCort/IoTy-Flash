@@ -128,6 +128,8 @@ var main = new function() {
     self.dtrRts = document.getElementById('dtrRts');
     self.formatLittleFS = document.getElementById('formatLittleFS');
     self.noWebSerial = document.getElementById('noWebSerial');
+    self.firmware1191 = document.getElementById('firmware-1.19.1');
+    self.firmware1210 = document.getElementById('firmware-1.21.0');
 
     self.connectBtn.addEventListener('click', self.connect);
     self.filteredConnectBtn.addEventListener('click', self.filteredConnect);
@@ -135,16 +137,19 @@ var main = new function() {
     self.flashIoTyBtn.addEventListener('click', self.flashIoTy);
 
     if ('serial' in navigator) {
-      this.downloadFirmware();
+      terminal.writeLine('No firmware loaded. Be sure to load a firmware before flashing.');
     } else {
       terminal.writeLine('Web Serial not supported on this browser!');
       self.noWebSerial.classList.remove('hide');
     }
+
+    self.firmware1191.addEventListener('click', function() { self.downloadFirmware('firmware-1.19.1.espnow.bin'); });
+    self.firmware1210.addEventListener('click', function() { self.downloadFirmware('ESP32_GENERIC-20231005-v1.21.0.bin'); });
   }
 
-  this.downloadFirmware = async function() {
-    terminal.write('Preloading firmware. Wait for completion before connecting... ');
-    let response = await fetch('firmware-1.19.1.espnow.bin');
+  this.downloadFirmware = async function(firmwareFile) {
+    terminal.write('Preloading firmware. Wait for completion before continuing... ');
+    let response = await fetch(firmwareFile);
     let bytes = await response.arrayBuffer();
     self.firmware = bufferToString(bytes);
 
@@ -155,7 +160,7 @@ var main = new function() {
       self.firmwareMPY[file] = { content: new Uint8Array(bytes) };
     }
     terminal.writeLine('Done');
-    terminal.writeLine('You can connect and flash your ESP32 now.');
+    terminal.writeLine('You can flash your ESP32 now.');
   }
 
   this.connect = async function(filters=[]) {
