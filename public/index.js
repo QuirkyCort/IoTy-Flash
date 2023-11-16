@@ -217,6 +217,7 @@ var main = new function() {
       await self.esploader.write_flash(flashOptions);
     } catch (error) {
       terminal.writeLine(error);
+      terminal.writeLine('If you are connected to the device on another tab or program, be sure to disconnect first.');
     }
 
     self.port.close();
