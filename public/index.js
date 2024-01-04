@@ -175,7 +175,7 @@ var main = new function() {
       } else {
         self.port = await navigator.serial.requestPort();
       }
-      terminal.writeLine('Serial port connected');
+      terminal.writeLine('Serial port connected. You can now proceed to step 2.');
     } catch (error) {
       terminal.writeLine(error);
     }
@@ -194,6 +194,8 @@ var main = new function() {
         terminal: terminal,
       };
       self.esploader = new ESPLoader(flashOptions);
+
+      terminal.writeLine('If the "Connecting..." message takes more than a couple of seconds, press and hold the boot button on your ESP32 until the chip is detected.');
 
       await self.esploader.main_fn();
 
@@ -215,6 +217,7 @@ var main = new function() {
         calculateMD5Hash: (image) => CryptoJS.MD5(CryptoJS.enc.Latin1.parse(image)),
       };
       await self.esploader.write_flash(flashOptions);
+      terminal.writeLine('Done. You can now proceed to step 3.');
     } catch (error) {
       terminal.writeLine(error);
       terminal.writeLine('If you are connected to the device on another tab or program, be sure to disconnect first.');
