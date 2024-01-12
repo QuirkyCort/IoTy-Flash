@@ -69,11 +69,11 @@
 
         <div class="container">
             <h4>Step 2: Flash Micropython</h4>
-            <p>Click one of the following to load a firmware before continuing.</p>
-            <button id="firmware-1.19.1">Firmware 1.19.1 &#40;Stable&#41;</button>
-            <button id="firmware-1.21.0">Firmware 1.21.0 &#40;Experimental&#41;</button>
-            <p>Flashing the micropython firmware will erase everything on the device.</p>
             <p>If your device is already flashed with a suitable micropython, you can skip this step.</p>
+            <p>Click one of the following to load a micropython before continuing.</p>
+            <button id="firmware-1.19.1">Micropython 1.19.1 &#40;Stable&#41;</button>
+            <button id="firmware-1.21.0">Micropython 1.21.0 &#40;Experimental&#41;</button>
+            <p>Flashing micropython will erase everything on the device.</p>
             Baudrate:
             <select id="baudrate">
                 <option value="921600">921600</option>
@@ -89,8 +89,8 @@
         <div class="container">
             <h4>Step 3: Flash IoTy</h4>
             <p>
-                This will copy the IoTy files to your ESP32.
-                If you encounter errors, try reseting your ESP32 before trying again.
+                This will copy the IoTy firmware to your ESP32.
+                If you encounter errors, try resetting your ESP32 before trying again.
             </p>
             <p>
                 Device name cannot be empty and must be no more than 8 characters.
