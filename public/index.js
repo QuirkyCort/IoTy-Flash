@@ -1,7 +1,7 @@
 import { ESPLoader, Transport } from 'https://unpkg.com/esptool-js@0.3.0/bundle.js';
 
 const directories = ['ioty', 'umqtt', 'ioty/html'];
-const firmwarePath = 'https://quirkycort.github.io/IoTy/public/firmware/';
+const firmwarePath = 'https://ioty-flash.a9i.sg/firmware/';
 const files = [
   'boot.py',
   'ioty/ble.mpy',
