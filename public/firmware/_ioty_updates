@@ -1,0 +1,14 @@
+mkdir ioty
+mkdir umqtt
+mkdir ioty/html
+mv ioty_1 boot.py
+mv ioty_2 ioty/ble.mpy
+mv ioty_3 ioty/http.mpy
+mv ioty_4 ioty/monitor.mpy
+mv ioty_5 ioty/pin.mpy
+mv ioty_6 ioty/constants.mpy
+mv ioty_7 umqtt/simple.mpy
+mv ioty_8 umqtt/robust.mpy
+mv ioty_9 ioty/mqtt.mpy
+mv ioty_a ioty/monitor_mqtt.mpy
+mv ioty_b ioty/html/index.html

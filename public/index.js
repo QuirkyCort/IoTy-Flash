@@ -1,7 +1,7 @@
 import { ESPLoader, Transport } from 'https://unpkg.com/esptool-js@0.3.0/bundle.js';
 
 const directories = ['ioty', 'umqtt', 'ioty/html'];
-const firmwarePath = 'https://ioty-flash.a9i.sg/firmware/';
+// const firmwarePath = 'https://ioty-flash.a9i.sg/firmware/';
 const files = [
   'boot.py',
   'ioty/ble.mpy',
@@ -145,6 +145,17 @@ var main = new function() {
 
     self.firmware1191.addEventListener('click', function() { self.downloadFirmware('firmware-1.19.1.espnow.bin'); });
     self.firmware1210.addEventListener('click', function() { self.downloadFirmware('ESP32_GENERIC-20231005-v1.21.0.bin'); });
+
+    self.downloadIotyFirmware();
+  }
+
+  this.downloadIotyFirmware = async function() {
+    self.firmwareMPY = {};
+    for (let file of files) {
+      let response = await fetch('firmware/' + file);
+      let bytes = await response.arrayBuffer();
+      self.firmwareMPY[file] = { content: new Uint8Array(bytes) };
+    }
   }
 
   this.downloadFirmware = async function(firmwareFile) {
