@@ -164,12 +164,6 @@ var main = new function() {
     let bytes = await response.arrayBuffer();
     self.firmware = bufferToString(bytes);
 
-    self.firmwareMPY = {};
-    for (let file of files) {
-      let response = await fetch(firmwarePath + file);
-      let bytes = await response.arrayBuffer();
-      self.firmwareMPY[file] = { content: new Uint8Array(bytes) };
-    }
     terminal.writeLine('Done');
     terminal.writeLine('You can flash your ESP32 now.');
   }
