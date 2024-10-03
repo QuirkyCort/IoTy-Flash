@@ -14,7 +14,8 @@ const files = [
   'ioty/services.mpy',
   'ioty/html/index.html',
   'umqtt/robust.mpy',
-  'umqtt/simple.mpy'
+  'umqtt/simple.mpy',
+  'ioty/wifi.mpy'
 ];
 const chunkSize = 256;
 const chunkDelay = 10;
