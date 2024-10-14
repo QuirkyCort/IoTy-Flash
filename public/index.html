@@ -91,13 +91,14 @@
             <h4>Step 3: Flash IoTy</h4>
             <p>
                 This will copy the IoTy firmware to your ESP32.
-                If you encounter errors, try resetting your ESP32 before trying again.
             </p>
             <p>
                 Device name cannot be empty and must be no more than 8 characters.
+                The ESP32-Cam may need DTR and RTS to be set to False.
             </p>
             <p>
-                The ESP32-Cam may need DTR and RTS to be set to False.
+                Resetting the ESP32 first can is sometimes needed to avoid errors.
+                <button id="reset">Reset</button>
             </p>
             Device name:
             <input id="deviceName" type="text" maxlength="8">

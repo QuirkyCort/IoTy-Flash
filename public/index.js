@@ -125,6 +125,7 @@ var main = new function() {
     self.filteredConnectBtn = document.getElementById('filteredConnect');
     self.flashMicropythonBtn = document.getElementById('flashMicropython');
     self.flashIoTyBtn = document.getElementById('flashIoTy');
+    self.resetBtn = document.getElementById('reset');
     self.deviceNameInput = document.getElementById('deviceName');
     self.dtrRts = document.getElementById('dtrRts');
     self.formatLittleFS = document.getElementById('formatLittleFS');
@@ -136,6 +137,7 @@ var main = new function() {
     self.connectBtn.addEventListener('click', self.connect);
     self.filteredConnectBtn.addEventListener('click', self.filteredConnect);
     self.flashMicropythonBtn.addEventListener('click', self.flashMicropython);
+    self.resetBtn.addEventListener('click', self.reset);
     self.flashIoTyBtn.addEventListener('click', self.flashIoTy);
 
     if ('serial' in navigator) {
@@ -326,6 +328,13 @@ var main = new function() {
 
     await self.closePort();
     terminal.writeLine('Flash IoTy completed!');
+  }
+
+  this.reset = async function() {
+    await self.openPort();
+    await self.port.setSignals({dataTerminalReady: false, requestToSend: true});
+    await self.port.setSignals({dataTerminalReady: false, requestToSend: false});
+    await self.closePort();
   }
 
   this.openPort = async function(dtrRts=0) {
