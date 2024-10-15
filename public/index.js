@@ -124,8 +124,8 @@ var main = new function() {
     self.connectBtn = document.getElementById('connect');
     self.filteredConnectBtn = document.getElementById('filteredConnect');
     self.flashMicropythonBtn = document.getElementById('flashMicropython');
+    self.loadedMicropythonSpan = document.getElementById('loadedMicropython');
     self.flashIoTyBtn = document.getElementById('flashIoTy');
-    self.resetBtn = document.getElementById('reset');
     self.deviceNameInput = document.getElementById('deviceName');
     self.dtrRts = document.getElementById('dtrRts');
     self.formatLittleFS = document.getElementById('formatLittleFS');
@@ -137,7 +137,6 @@ var main = new function() {
     self.connectBtn.addEventListener('click', self.connect);
     self.filteredConnectBtn.addEventListener('click', self.filteredConnect);
     self.flashMicropythonBtn.addEventListener('click', self.flashMicropython);
-    self.resetBtn.addEventListener('click', self.reset);
     self.flashIoTyBtn.addEventListener('click', self.flashIoTy);
 
     if ('serial' in navigator) {
@@ -171,6 +170,8 @@ var main = new function() {
 
     terminal.writeLine('Done');
     terminal.writeLine('You can flash your ESP32 now.');
+
+    self.loadedMicropythonSpan.innerText = 'Loaded ' + firmwareFile;
   }
 
   this.connect = async function(filters=[]) {
@@ -250,6 +251,12 @@ var main = new function() {
       terminal.writeLine('Device name cannot exceed 8 characters');
       return;
     }
+
+    terminal.writeLine('Resetting');
+
+    await self.reset();
+
+    await awaitTimeout(1000);
 
     try {
       await self.openPort(dtrRts);

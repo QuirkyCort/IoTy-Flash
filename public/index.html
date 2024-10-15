@@ -7,6 +7,15 @@
         <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js"></script>
 
         <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                box-sizing: border-box;
+                margin: 0;
+                padding: 8px;
+            }
+
             #noWebSerial {
                 color:white;
                 background:red;
@@ -28,6 +37,12 @@
                 padding: 0.5em;
                 white-space: pre;
                 overflow: auto;
+                flex-shrink: 0;
+            }
+
+            .containersFlex {
+                flex-shrink: 1;
+                overflow-y: scroll;
             }
 
             .container {
@@ -36,6 +51,10 @@
                 background: greenyellow;
                 color: black;
                 border: solid 2px black;
+            }
+
+            h1 {
+                margin-bottom: 0;
             }
 
             h4 {
@@ -53,36 +72,42 @@
 
         <div id="terminal"></div>
 
+    <div class="containersFlex">
         <div class="container">
             <h4>Step 1: Connect</h4>
             <p>This will connect to your ESP32 via Web Serial.</p>
             <p>
-                "Filtered Connect" can help hide the non-ESP32 devices, but some valid ESP32 devices may not appear.
+                <button id="filteredConnect">Filtered Connect</button>
+                Hides the non-ESP32 devices, but some valid ESP32 devices may not appear.
             </p>
             <p>
-                "Connect" will show all devices, but it may be hard to identify the correct device.
+                <button id="connect">Connect</button>
+                Show all devices, but may be hard to identify the correct device.
             </p>
-            <button id="filteredConnect">Filtered Connect</button>
-            <button id="connect">Connect</button>
         </div>
 
 
         <div class="container">
             <h4>Step 2: Flash Micropython</h4>
-            <p>If your device is already flashed with a suitable micropython, you can skip this step.</p>
-            <p>Click one of the following to load a micropython before continuing.</p>
+            <p>
+                Click one of the following to load a micropython before continuing.
+                If your device is already flashed with a suitable micropython, you can skip this step.
+            </p>
             <button id="firmware-1.23.0">Micropython 1.23.0 &#40;Stable&#41;</button>
             <button id="firmware-1.22.2_camera">Micropython 1.22.2 With Camera. No Bluetooth. &#40;Experimental.&#41;</button>
             <button id="firmware-1.19.1">Micropython 1.19.1 &#40;Legacy&#41;</button>
-            <p>Flashing micropython will erase everything on the device.</p>
-            Baudrate:
-            <select id="baudrate">
-                <option value="921600">921600</option>
-                <option value="460800">460800</option>
-                <option value="230400">230400</option>
-                <option value="115200" selected="selected">115200</option>
-            </select>
-            <button id="flashMicropython">Flash Micropython</button>
+            <em id="loadedMicropython">Not Loaded</em>
+            <p>
+                Baudrate:
+                <select id="baudrate">
+                    <option value="921600">921600</option>
+                    <option value="460800">460800</option>
+                    <option value="230400">230400</option>
+                    <option value="115200" selected="selected">115200</option>
+                </select>
+                <button id="flashMicropython">Flash Micropython</button>
+                <em>Flashing micropython will erase everything on the device.</em>
+            </p>
             <p>After clicking the above button, if the "Connecting..." message takes more than a couple of seconds, press and hold the boot button on your ESP32 until the chip is detected.</p>
             <p>If errors occurs, try again with a lower baudrate (...seems commonly required on Mac).</p>
         </div>
@@ -92,23 +117,19 @@
             <p>
                 This will copy the IoTy firmware to your ESP32.
             </p>
-            <p>
-                Device name cannot be empty and must be no more than 8 characters.
-                The ESP32-Cam may need DTR and RTS to be set to False.
-            </p>
-            <p>
-                Resetting the ESP32 first can is sometimes needed to avoid errors.
-                <button id="reset">Reset</button>
-            </p>
             Device name:
             <input id="deviceName" type="text" maxlength="8">
-            <button id="flashIoTy">Flash IoTy</button><br>
+            <button id="flashIoTy">Flash IoTy</button>
+            <em>Cannot be empty and max of 8 characters.</em><br>
             <select id="dtrRts">
                 <option value="0">Default DTR and RTS</option>
                 <option value="1">DTR: False, RTS: False</option>
-            </select><br>
+            </select>
+            <em>ESP32-Cam may need DTR and RTS to be set to False.</em>
+            <br>
             <input type="checkbox" id="formatLittleFS" checked> Format Littlefs
         </div>
+    </div>
 
         <script type="module" src="index.js"></script>
     </body>
