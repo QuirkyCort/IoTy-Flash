@@ -37,7 +37,7 @@
                 color: white;
                 font-family: monospace;
                 width: 100%;
-                height: 15em;
+                height: 13em;
                 padding: 0.5em;
                 white-space: pre;
                 overflow: auto;
@@ -68,72 +68,70 @@
         </style>
     </head>
     <body>
-        <h1>IoTy Flash Tool</h1>
-        <p>This tool allows you to flash an ESP32 with the IoTy firmware.</p>
+        <h1>IoTy Firmware Flash Tool</h1>
         <div id="noWebSerial" class="hide">
             Your browser does not support Web Serial. Please use Chrome.
         </div>
 
         <div id="terminal"></div>
 
-    <div class="containersFlex">
-        <div class="container">
-            <h4>Step 1: Connect</h4>
-            <p>This will connect to your ESP32 via Web Serial.</p>
-            <p>
-                <button id="filteredConnect">Filtered Connect</button>
-                Hides the non-ESP32 devices, but some valid ESP32 devices may not appear.
-            </p>
-            <p>
-                <button id="connect">Connect</button>
-                Show all devices, but may be hard to identify the correct device.
-            </p>
-        </div>
+        <div class="containersFlex">
+            <div class="container">
+                <h4>Step 1: Connect</h4>
+                <p>This will connect to your ESP32 via Web Serial.</p>
+                <p>
+                    <button id="filteredConnect">Filtered Connect</button>
+                    Hides the non-ESP32 devices, but some valid ESP32 devices may not appear.
+                </p>
+                <p>
+                    <button id="connect">Connect</button>
+                    Show all devices, but may be hard to identify the correct device.
+                </p>
+            </div>
 
+            <div class="container">
+                <h4>Step 2: Flash Micropython</h4>
+                <p>
+                    Click one of the following to load a micropython before continuing.
+                    If your device is already flashed with a suitable micropython, you can skip this step.
+                </p>
+                <button id="firmware-1.23.0">Micropython 1.23.0 &#40;Stable&#41;</button>
+                <button id="firmware-1.22.2_camera">Micropython 1.22.2 With Camera. No Bluetooth. &#40;Experimental.&#41;</button>
+                <button id="firmware-1.19.1">Micropython 1.19.1 &#40;Legacy&#41;</button>
+                <em id="loadedMicropython">Not Loaded</em>
+                <p>
+                    Baudrate:
+                    <select id="baudrate">
+                        <option value="921600">921600</option>
+                        <option value="460800">460800</option>
+                        <option value="230400">230400</option>
+                        <option value="115200" selected="selected">115200</option>
+                    </select>
+                    <button id="flashMicropython">Flash Micropython</button>
+                    <em>Flashing micropython will erase everything on the device.</em>
+                </p>
+                <p>After clicking the above button, if the "Connecting..." message takes more than a couple of seconds, press and hold the boot button on your ESP32 until the chip is detected.</p>
+                <p>If errors occurs, try again with a lower baudrate (...seems commonly required on Mac).</p>
+            </div>
 
-        <div class="container">
-            <h4>Step 2: Flash Micropython</h4>
-            <p>
-                Click one of the following to load a micropython before continuing.
-                If your device is already flashed with a suitable micropython, you can skip this step.
-            </p>
-            <button id="firmware-1.23.0">Micropython 1.23.0 &#40;Stable&#41;</button>
-            <button id="firmware-1.22.2_camera">Micropython 1.22.2 With Camera. No Bluetooth. &#40;Experimental.&#41;</button>
-            <button id="firmware-1.19.1">Micropython 1.19.1 &#40;Legacy&#41;</button>
-            <em id="loadedMicropython">Not Loaded</em>
-            <p>
-                Baudrate:
-                <select id="baudrate">
-                    <option value="921600">921600</option>
-                    <option value="460800">460800</option>
-                    <option value="230400">230400</option>
-                    <option value="115200" selected="selected">115200</option>
+            <div class="container">
+                <h4>Step 3: Flash IoTy</h4>
+                <p>
+                    This will copy the IoTy firmware to your ESP32.
+                </p>
+                Device name:
+                <input id="deviceName" type="text" maxlength="8">
+                <button id="flashIoTy">Flash IoTy</button>
+                <em>Cannot be empty and max of 8 characters.</em><br>
+                <select id="dtrRts">
+                    <option value="0">Default DTR and RTS</option>
+                    <option value="1">DTR: False, RTS: False</option>
                 </select>
-                <button id="flashMicropython">Flash Micropython</button>
-                <em>Flashing micropython will erase everything on the device.</em>
-            </p>
-            <p>After clicking the above button, if the "Connecting..." message takes more than a couple of seconds, press and hold the boot button on your ESP32 until the chip is detected.</p>
-            <p>If errors occurs, try again with a lower baudrate (...seems commonly required on Mac).</p>
+                <em>ESP32-Cam may need DTR and RTS to be set to False.</em>
+                <br>
+                <input type="checkbox" id="formatLittleFS" checked> Format Littlefs
+            </div>
         </div>
-
-        <div class="container">
-            <h4>Step 3: Flash IoTy</h4>
-            <p>
-                This will copy the IoTy firmware to your ESP32.
-            </p>
-            Device name:
-            <input id="deviceName" type="text" maxlength="8">
-            <button id="flashIoTy">Flash IoTy</button>
-            <em>Cannot be empty and max of 8 characters.</em><br>
-            <select id="dtrRts">
-                <option value="0">Default DTR and RTS</option>
-                <option value="1">DTR: False, RTS: False</option>
-            </select>
-            <em>ESP32-Cam may need DTR and RTS to be set to False.</em>
-            <br>
-            <input type="checkbox" id="formatLittleFS" checked> Format Littlefs
-        </div>
-    </div>
 
         <script type="module" src="index.js"></script>
     </body>
