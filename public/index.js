@@ -33,10 +33,10 @@ let usbFilters = [
     usbVendorId: 0x1a86,
     usbProductId: 0x7523
   },
-  { // RPI Pico
-    usbProductId: 5,
-    usbVendorId: 11914
-  }
+  { // ESP32-C3 Supermini
+    usbProductId: 4097,
+    usbVendorId: 12346
+  },
 ];
 
 function bufferToString(buffer) {
@@ -115,8 +115,29 @@ var terminal = new function() {
   }
 };
 
+const FIRMWARE = {
+  'firmware-ESP32-C3-1.24.1': {
+    url: 'ESP32_GENERIC_C3-20241129-v1.24.1.bin',
+    address: 0x0
+  },
+  'firmware-1.19.1': {
+    url: 'firmware-1.19.1.espnow.bin',
+    address: 0x1000
+  },
+  'firmware-1.23.0': {
+    url: 'ESP32_GENERIC-20240602-v1.23.0.bin',
+    address: 0x1000
+  },
+  'firmware-1.22.2_camera': {
+    url: 'micropython_v1.22.2_camera_no_ble.bin',
+    address: 0x1000
+  }
+};
+
 var main = new function() {
   let self = this;
+
+  this.address = 0x1000;
 
   // Run on page load
   this.init = function() {
@@ -130,9 +151,6 @@ var main = new function() {
     self.dtrRts = document.getElementById('dtrRts');
     self.formatLittleFS = document.getElementById('formatLittleFS');
     self.noWebSerial = document.getElementById('noWebSerial');
-    self.firmware1191 = document.getElementById('firmware-1.19.1');
-    self.firmware1230 = document.getElementById('firmware-1.23.0');
-    self.firmware1222_camera = document.getElementById('firmware-1.22.2_camera');
 
     self.connectBtn.addEventListener('click', self.connect);
     self.filteredConnectBtn.addEventListener('click', self.filteredConnect);
@@ -146,9 +164,9 @@ var main = new function() {
       self.noWebSerial.classList.remove('hide');
     }
 
-    self.firmware1191.addEventListener('click', function() { self.downloadFirmware('firmware-1.19.1.espnow.bin'); });
-    self.firmware1230.addEventListener('click', function() { self.downloadFirmware('ESP32_GENERIC-20240602-v1.23.0.bin'); });
-    self.firmware1222_camera.addEventListener('click', function() { self.downloadFirmware('micropython_v1.22.2_camera_no_ble.bin'); });
+    for (let e of document.getElementsByClassName('firmware')) {
+      e.addEventListener('click', self.downloadFirmware);
+    };
 
     self.downloadIotyFirmware();
   }
@@ -162,7 +180,12 @@ var main = new function() {
     }
   }
 
-  this.downloadFirmware = async function(firmwareFile) {
+  this.downloadFirmware = async function(e) {
+    const firmware = FIRMWARE[e.target.id];
+
+    let firmwareFile = firmware.url;
+    self.address = firmware.address;
+
     terminal.write('Preloading firmware. Wait for completion before continuing... ');
     let response = await fetch(firmwareFile);
     let bytes = await response.arrayBuffer();
@@ -216,7 +239,7 @@ var main = new function() {
 
       let fileArray = [{
         data: self.firmware,
-        address: 0x1000
+        address: self.address
       }];
 
       flashOptions = {

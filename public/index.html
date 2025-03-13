@@ -78,7 +78,10 @@
         <div class="containersFlex">
             <div class="container">
                 <h4>Step 1: Connect</h4>
-                <p>This will connect to your ESP32 via Web Serial.</p>
+                <p>
+                    This will connect to your ESP32 via Web Serial.
+                    For the ESP32-C3-Supermini, you need to hold the boot button while plugging in the USB cable.
+                </p>
                 <p>
                     <button id="filteredConnect">Filtered Connect</button>
                     Hides the non-ESP32 devices, but some valid ESP32 devices may not appear.
@@ -95,9 +98,19 @@
                     Click one of the following to load a micropython before continuing.
                     If your device is already flashed with a suitable micropython, you can skip this step.
                 </p>
-                <button id="firmware-1.23.0">Micropython 1.23.0 &#40;Stable&#41;</button>
-                <button id="firmware-1.22.2_camera">Micropython 1.22.2 With Camera. No Bluetooth. &#40;Experimental.&#41;</button>
-                <button id="firmware-1.19.1">Micropython 1.19.1 &#40;Legacy&#41;</button>
+                <p>
+                    ESP32:
+                    <button id="firmware-1.23.0" class="firmware">Micropython 1.23.0 &#40;Stable&#41;</button>
+                    <button id="firmware-1.19.1" class="firmware">Micropython 1.19.1 &#40;Legacy&#41;</button>
+                </p>
+                <p>
+                    ESP32-Cam:
+                    <button id="firmware-1.22.2_camera" class="firmware">Micropython 1.22.2 With Camera. No Bluetooth. &#40;Stable.&#41;</button>
+                </p>
+                <p>
+                    ESP32-C3-Supermini:
+                    <button id="firmware-ESP32-C3-1.24.1" class="firmware">Micropython 1.24.1 &#40;Experimental&#41;</button>
+                </p>
                 <em id="loadedMicropython">Not Loaded</em>
                 <p>
                     Baudrate:
@@ -118,6 +131,7 @@
                 <h4>Step 3: Flash IoTy</h4>
                 <p>
                     This will copy the IoTy firmware to your ESP32.
+                    For the ESP32-C3-Supermini, you'll need to press the reset button and reconnect before this step.
                 </p>
                 Device name:
                 <input id="deviceName" type="text" maxlength="8">
