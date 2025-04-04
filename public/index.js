@@ -1,4 +1,5 @@
-import { ESPLoader, Transport } from 'https://unpkg.com/esptool-js@0.3.0/bundle.js';
+import { ESPLoader, Transport } from './bundle.js';
+// import { ESPLoader, Transport } from 'https://unpkg.com/esptool-js@0.3.0/bundle.js';
 
 const directories = ['ioty', 'umqtt', 'ioty/html'];
 // const firmwarePath = 'https://ioty-flash.a9i.sg/firmware/';
