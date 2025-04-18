@@ -1,10 +1,11 @@
 import os
 from machine import Pin
 from time import sleep_ms
+import ioty.constants as constants
 
 def main():
-    led = Pin(2, Pin.OUT)
-    btn = Pin(0, Pin.IN, Pin.PULL_UP)
+    led = Pin(constants._LED_PIN, Pin.OUT)
+    btn = Pin(constants._BOOT_PIN, Pin.IN, Pin.PULL_UP)
 
     def blink(ms,count=1):
         for _ in range(count):

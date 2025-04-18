@@ -6,7 +6,6 @@ const directories = ['ioty', 'umqtt', 'ioty/html'];
 const files = [
   'boot.py',
   'ioty/ble.mpy',
-  'ioty/constants.mpy',
   'ioty/http.mpy',
   'ioty/monitor.mpy',
   'ioty/monitor_mqtt.mpy',
@@ -18,8 +17,30 @@ const files = [
   'umqtt/simple.mpy',
   'ioty/wifi.mpy'
 ];
+const fileConstants = 'ioty/constants.py';
 const chunkSize = 256;
 const chunkDelay = 10;
+
+const FIRMWARE = {
+  'firmware-ESP32-C3-1.24.1': {
+    url: 'ESP32_GENERIC_C3-20241129-v1.24.1.bin',
+    address: 0x0,
+    bootPin: 9,
+    ledPin: 8
+  },
+  'firmware-1.19.1': {
+    url: 'firmware-1.19.1.espnow.bin',
+    address: 0x1000
+  },
+  'firmware-1.23.0': {
+    url: 'ESP32_GENERIC-20240602-v1.23.0.bin',
+    address: 0x1000
+  },
+  'firmware-1.22.2_camera': {
+    url: 'micropython_v1.22.2_camera_no_ble.bin',
+    address: 0x1000
+  }
+};
 
 let usbFilters = [
   { // CH9102F (non-standard?)
@@ -116,25 +137,6 @@ var terminal = new function() {
   }
 };
 
-const FIRMWARE = {
-  'firmware-ESP32-C3-1.24.1': {
-    url: 'ESP32_GENERIC_C3-20241129-v1.24.1.bin',
-    address: 0x0
-  },
-  'firmware-1.19.1': {
-    url: 'firmware-1.19.1.espnow.bin',
-    address: 0x1000
-  },
-  'firmware-1.23.0': {
-    url: 'ESP32_GENERIC-20240602-v1.23.0.bin',
-    address: 0x1000
-  },
-  'firmware-1.22.2_camera': {
-    url: 'micropython_v1.22.2_camera_no_ble.bin',
-    address: 0x1000
-  }
-};
-
 var main = new function() {
   let self = this;
 
@@ -174,28 +176,29 @@ var main = new function() {
 
   this.downloadIotyFirmware = async function() {
     self.firmwareMPY = {};
+    self.constantsPy = null;
     for (let file of files) {
       let response = await fetch('firmware/' + file);
       let bytes = await response.arrayBuffer();
       self.firmwareMPY[file] = { content: new Uint8Array(bytes) };
     }
+    let response = await fetch('firmware/' + fileConstants);
+    let bytes = await response.arrayBuffer();
+    self.constantsPy = new Uint8Array(bytes);
   }
 
   this.downloadFirmware = async function(e) {
-    const firmware = FIRMWARE[e.target.id];
-
-    let firmwareFile = firmware.url;
-    self.address = firmware.address;
+    self.firmware = FIRMWARE[e.target.id];
 
     terminal.write('Preloading firmware. Wait for completion before continuing... ');
-    let response = await fetch(firmwareFile);
+    let response = await fetch(self.firmware.url);
     let bytes = await response.arrayBuffer();
-    self.firmware = bufferToString(bytes);
+    self.firmwareData = bufferToString(bytes);
 
     terminal.writeLine('Done');
     terminal.writeLine('You can flash your ESP32 now.');
 
-    self.loadedMicropythonSpan.innerText = 'Loaded ' + firmwareFile;
+    self.loadedMicropythonSpan.innerText = 'Loaded ' + self.firmware.url;
   }
 
   this.connect = async function(filters=[]) {
@@ -239,8 +242,8 @@ var main = new function() {
       await self.esploader.erase_flash();
 
       let fileArray = [{
-        data: self.firmware,
-        address: self.address
+        data: self.firmwareData,
+        address: self.firmware.address
       }];
 
       flashOptions = {
@@ -259,6 +262,21 @@ var main = new function() {
     }
 
     self.port.close();
+  }
+
+  this.modifyConstants = function() {
+    let textdecoder = new TextDecoder();
+    let textencoder = new TextEncoder();
+    let constantsPyStr = textdecoder.decode(self.constantsPy);
+    if ('bootPin' in self.firmware) {
+      terminal.writeLine('    Modifying _BOOT_PIN to ' + self.firmware.bootPin);
+      constantsPyStr = constantsPyStr.replace('_BOOT_PIN = 0', '_BOOT_PIN = ' + self.firmware.bootPin);
+    }
+    if ('ledPin' in self.firmware) {
+      terminal.writeLine('    Modifying _LED_PIN to ' + self.firmware.ledPin);
+      constantsPyStr = constantsPyStr.replace('_LED_PIN = 2', '_LED_PIN = ' + self.firmware.ledPin);
+    }
+    self.firmwareMPY['ioty/constants.py'] = { content: textencoder.encode(constantsPyStr) };
   }
 
   this.flashIoTy = async function() {
@@ -325,6 +343,10 @@ var main = new function() {
       await self.closePort();
       return;
     }
+    terminal.writeLine('Done');
+
+    terminal.writeLine('Modify constants.py');
+    self.modifyConstants();
     terminal.writeLine('Done');
 
     terminal.writeLine('Copying firmware files');
