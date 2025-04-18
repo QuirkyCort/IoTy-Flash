@@ -26,7 +26,9 @@ const FIRMWARE = {
     url: 'ESP32_GENERIC_C3-20241129-v1.24.1.bin',
     address: 0x0,
     bootPin: 9,
-    ledPin: 8
+    ledPin: 8,
+    ledOn: 0,
+    ledOff: 1
   },
   'firmware-1.19.1': {
     url: 'firmware-1.19.1.espnow.bin',
@@ -275,6 +277,14 @@ var main = new function() {
     if ('ledPin' in self.firmware) {
       terminal.writeLine('    Modifying _LED_PIN to ' + self.firmware.ledPin);
       constantsPyStr = constantsPyStr.replace('_LED_PIN = 2', '_LED_PIN = ' + self.firmware.ledPin);
+    }
+    if ('ledOn' in self.firmware) {
+      terminal.writeLine('    Modifying _LED_ON to ' + self.firmware.ledOn);
+      constantsPyStr = constantsPyStr.replace('_LED_ON = 1', '_LED_ON = ' + self.firmware.ledOn);
+    }
+    if ('ledOff' in self.firmware) {
+      terminal.writeLine('    Modifying _LED_OFF to ' + self.firmware.ledOff);
+      constantsPyStr = constantsPyStr.replace('_LED_OFF = 0', '_LED_OFF = ' + self.firmware.ledOff);
     }
     self.firmwareMPY['ioty/constants.py'] = { content: textencoder.encode(constantsPyStr) };
   }
