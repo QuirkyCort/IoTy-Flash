@@ -40,6 +40,10 @@ const FIRMWARE = {
   'firmware-1.22.2_camera': {
     url: 'micropython_v1.22.2_camera_no_ble.bin',
     address: 0x1000
+  },
+  'esp32s3-1.26.0_camera': {
+    url: 'mpy_cam-v1.26.0-FREENOVE_ESP32S3_CAM.bin',
+    address: 0
   }
 };
 
@@ -59,6 +63,10 @@ let usbFilters = [
   { // ESP32-C3 Supermini
     usbProductId: 4097,
     usbVendorId: 12346
+  },
+  { // Freenove ESP32-S3-WROOM CAM Board
+    usbProductId: 21971,
+    usbVendorId: 6790
   },
 ];
 
