@@ -3,6 +3,7 @@ import { ESPLoader, Transport } from './bundle.js';
 
 const directories = ['ioty', 'umqtt', 'ioty/html'];
 // const firmwarePath = 'https://ioty-flash.a9i.sg/firmware/';
+const FIRMWARE_IOTY_PATH = 'firmware_ioty/';
 const files = [
   'boot.py',
   'ioty/ble.mpy',
@@ -21,6 +22,7 @@ const fileConstants = 'ioty/constants.py';
 const chunkSize = 256;
 const chunkDelay = 10;
 
+const FIRMWARE_PATH = 'firmware/';
 const FIRMWARE = {
   'firmware-ESP32-C3-1.24.1': {
     url: 'ESP32_GENERIC_C3-20241129-v1.24.1.bin',
@@ -44,6 +46,13 @@ const FIRMWARE = {
   'esp32s3-1.26.0_camera': {
     url: 'mpy_cam-v1.26.0-FREENOVE_ESP32S3_CAM.bin',
     address: 0
+  },
+  'esp32s3-1.27.0': {
+    url: 'ESP32_GENERIC_S3-20251209-v1.27.0.bin',
+    address: 0,
+    bootPin: 0,
+    ledPin: 48,
+    ledOn: 0
   }
 };
 
@@ -68,6 +77,10 @@ let usbFilters = [
     usbProductId: 21971,
     usbVendorId: 6790
   },
+  {
+    usbProductId: 16385,
+    usbVendorId: 12346
+  }
 ];
 
 function bufferToString(buffer) {
@@ -163,11 +176,14 @@ var main = new function() {
     self.dtrRts = document.getElementById('dtrRts');
     self.formatLittleFS = document.getElementById('formatLittleFS');
     self.noWebSerial = document.getElementById('noWebSerial');
+    self.firmwareSelect = document.getElementById('firmwareSelect');
+    self.downloadFirmwareBtn = document.getElementById('downloadFirmware');
 
     self.connectBtn.addEventListener('click', self.connect);
     self.filteredConnectBtn.addEventListener('click', self.filteredConnect);
     self.flashMicropythonBtn.addEventListener('click', self.flashMicropython);
     self.flashIoTyBtn.addEventListener('click', self.flashIoTy);
+    self.downloadFirmwareBtn.addEventListener('click', self.downloadFirmware);
 
     if ('serial' in navigator) {
       terminal.writeLine('No firmware loaded. Be sure to load a firmware before flashing.');
@@ -176,10 +192,6 @@ var main = new function() {
       self.noWebSerial.classList.remove('hide');
     }
 
-    for (let e of document.getElementsByClassName('firmware')) {
-      e.addEventListener('click', self.downloadFirmware);
-    };
-
     self.downloadIotyFirmware();
   }
 
@@ -187,20 +199,20 @@ var main = new function() {
     self.firmwareMPY = {};
     self.constantsPy = null;
     for (let file of files) {
-      let response = await fetch('firmware/' + file);
+      let response = await fetch(FIRMWARE_IOTY_PATH + file);
       let bytes = await response.arrayBuffer();
       self.firmwareMPY[file] = { content: new Uint8Array(bytes) };
     }
-    let response = await fetch('firmware/' + fileConstants);
+    let response = await fetch(FIRMWARE_IOTY_PATH + fileConstants);
     let bytes = await response.arrayBuffer();
     self.constantsPy = new Uint8Array(bytes);
   }
 
   this.downloadFirmware = async function(e) {
-    self.firmware = FIRMWARE[e.target.id];
+    self.firmware = FIRMWARE[firmwareSelect.value];
 
     terminal.write('Preloading firmware. Wait for completion before continuing... ');
-    let response = await fetch(self.firmware.url);
+    let response = await fetch(FIRMWARE_PATH + self.firmware.url);
     let bytes = await response.arrayBuffer();
     self.firmwareData = bufferToString(bytes);
 
