@@ -47,12 +47,19 @@ const FIRMWARE = {
     url: 'mpy_cam-v1.26.0-FREENOVE_ESP32S3_CAM.bin',
     address: 0
   },
-  'esp32s3-1.27.0': {
+  'esp32s3-supermini-1.27.0': {
     url: 'ESP32_GENERIC_S3-20251209-v1.27.0.bin',
     address: 0,
     bootPin: 0,
     ledPin: 48,
     ledOn: 0
+  },
+  'esp32s3-1.27.0': {
+    url: 'ESP32_GENERIC_S3-20251209-v1.27.0.bin',
+    address: 0,
+    bootPin: 0,
+    ledPin: 48,
+    ledOn: 'n'
   }
 };
 
@@ -77,7 +84,7 @@ let usbFilters = [
     usbProductId: 21971,
     usbVendorId: 6790
   },
-  {
+  { // ESP32-S3
     usbProductId: 16385,
     usbVendorId: 12346
   }
@@ -299,7 +306,12 @@ var main = new function() {
     }
     if ('ledOn' in self.firmware) {
       terminal.writeLine('    Modifying _LED_ON to ' + self.firmware.ledOn);
-      constantsPyStr = constantsPyStr.replace('_LED_ON = 1', '_LED_ON = ' + self.firmware.ledOn);
+      let ledOnValue = self.firmware.ledOn;
+      if (typeof ledOnValue === 'string') {
+        constantsPyStr = constantsPyStr.replace('_LED_ON = 1', '_LED_ON = \'' + ledOnValue + '\'');
+      } else {
+        constantsPyStr = constantsPyStr.replace('_LED_ON = 1', '_LED_ON = ' + ledOnValue);
+      }
     }
     self.firmwareMPY['ioty/constants.py'] = { content: textencoder.encode(constantsPyStr) };
   }

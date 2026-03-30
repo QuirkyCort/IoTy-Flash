@@ -81,7 +81,7 @@
                 <h4>Step 1: Connect</h4>
                 <p>
                     This will connect to your ESP32 via Web Serial.
-                    For some devices (eg. ESP32-C3-Supermini, ESP32-S3_Supermini), you need to hold the boot button while plugging in the USB cable.
+                    For some devices (eg. ESP32-C3-Supermini, ESP32-S3), you need to hold the boot button while plugging in the USB cable.
                 </p>
                 <p>
                     <button id="filteredConnect">Filtered Connect</button>
@@ -101,18 +101,19 @@
                 </p>
                 <select id="firmwareSelect">
                     <optgroup label="ESP32">
-                        <option value="firmware-1.23.0">Micropython 1.23.0 &#40;Stable&#41;</option>
-                        <option value="firmware-1.19.1">Micropython 1.19.1 &#40;Legacy&#41;</option>
+                        <option value="firmware-1.23.0">ESP32: Micropython 1.23.0</option>
+                        <option value="firmware-1.19.1">ESP32: Micropython 1.19.1 &#40;Legacy&#41;</option>
                     </optgroup>
                     <optgroup label="Camera Boards">
-                        <option value="firmware-1.22.2_camera">ESP32Cam Micropython 1.22.2 No Bluetooth. &#40;Stable.&#41;</option>
-                        <option value="esp32s3-1.26.0_camera">Freenove ESP32-S3 Cam Micropython 1.26.0 &#40;Experimental.&#41;</option>
+                        <option value="firmware-1.22.2_camera">ESP32Cam: Micropython 1.22.2 No Bluetooth.</option>
+                        <option value="esp32s3-1.26.0_camera">Freenove ESP32-S3 Cam: Micropython 1.26.0</option>
                     </optgroup>
-                    <optgroup label="ESP32-C3-Supermini">
-                        <option value="firmware-ESP32-C3-1.24.1">Micropython 1.24.1 &#40;Stable&#41;</option>
+                    <optgroup label="ESP32-C3">
+                        <option value="firmware-ESP32-C3-1.24.1">ESP32-C3 Supermini: Micropython 1.24.1</option>
                     </optgroup>
                     <optgroup label="ESP32-S3">
-                        <option value="esp32s3-1.27.0">Micropython 1.27.0 &#40;Stable&#41;</option>
+                        <option value="esp32s3-1.27.0">ESP32-S3: Micropython 1.27.0</option>
+                        <option value="esp32s3-supermini-1.27.0">ESP32-S3 Supermini: Micropython 1.27.0</option>
                     </optgroup>
                 </select>
                 <p>
@@ -138,7 +139,7 @@
                 <h4>Step 3: Flash IoTy</h4>
                 <p>
                     This will copy the IoTy firmware to your ESP32.
-                    For some devices (eg. ESP32-C3-Supermini, ESP32-S3_Supermini), you'll need to press the reset button and reconnect before this step.
+                    For some devices (eg. ESP32-C3-Supermini, ESP32-S3), you'll need to press the reset button and reconnect before this step.
                 </p>
                 Device name:
                 <input id="deviceName" type="text" maxlength="8">
